@@ -9,5 +9,5 @@ Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-Imports: Rcpp (>= 1.0.1)
+Imports: Rcpp (>= 1.0.1), shiny, shinydashboard, rhandsontable, shinyFiles, randtoolbox, lhs, Rcpp, randomForest, rgl, ggplot2, gplots, plot3D, DT, caret
 LinkingTo: Rcpp
