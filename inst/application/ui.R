@@ -10,29 +10,29 @@ ui <- dashboardPage(
       menuItem("ML model training", tabName = "ml_model_tab"),
       menuItem("Explore Phasespace", tabName = "exp_phase_tab")
     )
-    
+
   ),
   dashboardBody(
     tags$head(
       tags$style(type="text/css", "#conf_mat tr td:first-child {font-weight:bold;} #conf_stats tr td:first-child {font-weight:bold;}")
     ),
-    
+
     tabItems(
       tabItem("overview_tab",
                 tags$div(img(src = "Figure1.png", width = "800"))
                     ),
       tabItem("workspace_tab",
               fluidRow(
-                
-                column(3,h4("Create a new phasespace."), 
+
+                column(3,h4("Create a new phasespace."),
                        textInput("phasespace_name", "Phasespace name."),
                        actionButton("new_phasespace","Create!")),
                 column(4, h4("Open an existing phasespace."),
-                       
+
                        shinyFilesButton("file_phasespace",
                                            "Browse...","Please select a phasespace.",
                                            FALSE)
-                       #fileInput("file_phasespace", 
+                       #fileInput("file_phasespace",
                         #           h4("Open an existing phasespace."))),
                        ),
                 column(3,h4("Save the current phasespace (.Rds)"),
@@ -46,24 +46,24 @@ ui <- dashboardPage(
               fluidPage(
                 column(4,uiOutput("current_phasespace_name"))
               ),
-              
+
               fluidRow(
                 column(4, uiOutput("list_prm_ranges")),
                 column(4, uiOutput("list_init_prm_combs")),
                 column(4, uiOutput("list_addit_prm_combs"))
                 ),
-              
+
               fluidRow(
                 column(4, uiOutput("list_phenotypes")),
                 column(4, uiOutput("list_ML.models"))
               )
-              
-              
+
+
               ),
-      
-      
+
+
       tabItem("init_smpl_tab",
-              
+
               #h1("Parameter combination generation"),
               sidebarLayout(
                  sidebarPanel(selectInput("sampling_meth", label = h5("Select a sampling method."),
@@ -88,24 +88,24 @@ ui <- dashboardPage(
 
 
                 mainPanel(h4("Load parameter ranges"),
-                           
+
                           fluidRow(
-                             column(4, uiOutput("file_ui")), 
+                             column(4, uiOutput("file_ui")),
                              column(4, uiOutput("prm_ranges_select_ui")),
                              column(2,actionButton("reset", "Reset"),
                                     actionButton("load", "Load"),
                                     actionButton("delete", "Delete"))
                           ),
-                          
+
                           fluidRow(
                             column(3, uiOutput("prm_num_ui")),
                             column(3,h5("Log scale"),
                                    actionButton("sel_desel_all", label = "Select/Deselect All"))
-                          ),  
+                          ),
                           fluidRow(
                             column(6,rHandsontableOutput("parameter_ranges")
                             )
-                           
+
                           ),
                           br(),
                           fluidRow(
@@ -119,14 +119,13 @@ ui <- dashboardPage(
                             column(3, h4("Parameter grids")),
                             column(3, checkboxInput("check_prm_grids_mod", label = h5("Modify parameter grids")))
                           ),
-                          
+
                           fluidRow(
                             uiOutput("prm_grids_ui")
                           ),
-                         
+
 
                           uiOutput("prm_comb_ui")
-
                           #tableOutput("prm.ranges.dup")
 
 
@@ -134,7 +133,7 @@ ui <- dashboardPage(
 
                 )
 
-              
+
               ),
       tabItem("add_smpl_tab",
              # h1("Parameter combination zoom-in"),
@@ -157,7 +156,7 @@ ui <- dashboardPage(
                              textInput("addit_prm_combs_name",label = h5("Enter a name for this parameter set")),
                              actionButton("addit_prm_combs_save2ps", "Add to Phasespace"),
                              uiOutput("list_addit_prm_combs_ui"),
-                             
+
                              verbatimTextOutput("add_test")
                 ),
 
@@ -166,20 +165,20 @@ ui <- dashboardPage(
                 mainPanel(h4("Load an existing parameter space"),
                           fluidRow(
                             column(4,uiOutput("laad_prm_ranges_ui")),
-                            column(4,uiOutput("load_init_prm_combs_ui")),        
+                            column(4,uiOutput("load_init_prm_combs_ui")),
                             column(2,actionButton("add_reset", "Reset"))
                           ),
-                          
+
                           h4("Selected parameter combinations"),
                           uiOutput("file_prm_selected_ui"),
-                          
-                          
+
+
                           fluidRow(
                             uiOutput("prm_space_selected_tab_ui")
                           ),
-                       
+
                           uiOutput("prm_comb_zoomin_ui")
-                  
+
                           )
 
                 )
@@ -193,7 +192,7 @@ ui <- dashboardPage(
                        checkboxInput("with_tsne_ml", label = h5("With tSNE coordinates"))),
                 column(3, uiOutput("list_ml.models_ml_tab_ui"))
               ),
-              
+
               fluidRow(
                 column(3,uiOutput("list_parameters_ml_tab_ui")),
                 column(3,sliderInput("ratio_train_test",  h4("Fraction of training set(%)"),
@@ -206,17 +205,17 @@ ui <- dashboardPage(
                        uiOutput("filter_ml_ui"),
                        uiOutput("class_def_ml_ui")
                        )
-                       
-                
+
+
               ),
               fluidRow(
                 column(2,uiOutput("manual_curation_button_ml_ui")),
                 column(2,actionButton("train_ml_model", h5("Train ML model!")))
               ),
-              
+
               fluidRow(uiOutput("manual_curation_hist_ml_ui")
               ),
-              
+
               br(),
               fluidRow(column(3,uiOutput("new_ml_models_ml_ui")),
                        column(2,br(),br(),actionButton("register_ml", h5("Register to Phasespace")),
@@ -231,7 +230,7 @@ ui <- dashboardPage(
                                 column(4,
                                        plotOutput("varImp")
                                        )
-                                
+
                                 ),
                        tabPanel("Prediction performance", value = "tab_pred_perform",
                                 column(4,
@@ -244,8 +243,8 @@ ui <- dashboardPage(
                        )
                 )
               ),
-              
-      
+
+
       tabItem("exp_phase_tab",
               fluidRow(
                 column(3, uiOutput("list_phenotypes_tab_ui"),
@@ -258,16 +257,16 @@ ui <- dashboardPage(
                        h4("Selected ML model"),
                        verbatimTextOutput("test_exp_phase_tab"))
               ),
-              
+
               fluidRow(
                 column(9,
                        h4("Parameter space in t-SNE"),
                        sidebarLayout(
-                        
+
                          sidebarPanel(
                            uiOutput("exp_phase_side_ui"), width = 3
                          ),
-                         
+
                          mainPanel(
                            fluidRow(
                              radioButtons(inputId = "within_ml.model", label = NULL, choices = c("All", "Training and test sets", "Training set" ),inline = TRUE),
@@ -275,7 +274,7 @@ ui <- dashboardPage(
                            ),
                            # fluidRow(column(6,checkboxInput("within_ml.model", label = h5("Training and test sets"))),
                            #          column(6,checkboxInput("within_ml.model", label = h5("Training and test sets")))
-                           plotOutput("t_SNE", 
+                           plotOutput("t_SNE",
                                       dblclick = "tsne_dblclick",
                                       click = "tsne_click",
                                       brush = brushOpts(
@@ -290,7 +289,7 @@ ui <- dashboardPage(
                        plotOutput("global_varImp",height = "300px"),
                        textInput("tsne_manual_pt_select", h5("Input parameter key for manual selection"))
                        )
-                
+
                 # column(2,
                 #        br(),
                 #        br(),
@@ -305,7 +304,7 @@ ui <- dashboardPage(
                 uiOutput("further_info_ml_model_button_ui"),
                 uiOutput("further_info_ml_model_ui")
               ),
-            
+
               br(),
               fluidRow(
                 tabBox(id = "selection", selected = NULL, width = 12, #type = "pills",
@@ -318,7 +317,7 @@ ui <- dashboardPage(
                                        column(6,
                                               plotOutput("hclust_prms",height = "600px"),
                                               uiOutput("hclust_prms_selected_ui")),
-                                       
+
                                        column(6,
                                               plotOutput("hclust_local_varimp",height = "600px"),
                                               uiOutput("hclust_locImp_spec_ui")
@@ -356,35 +355,35 @@ ui <- dashboardPage(
                                               )
                                        )
                                      )
-                            
+
                                      ),
                             tabPanel("Validation", value = "tab_val",
-                                    
+
                                      fileInput("file_validation", "Load a validation simulation result (.txt, .csv)."),
                                      fluidRow(uiOutput("gen_validation_ui")),
                                      fluidRow(uiOutput("validation_plots"))
-                            
+
                                      ),
                             tabPanel("Navigation", value = "tab_nav",
-                                    
+
                                      fluidRow(
                                        ##parameter sliders
                                        column(6, wellPanel(id = "tPanel",
                                                            style = "overflow-y:scroll; max-height: 300px",
                                                            uiOutput("parameters")))
-                                       
-                                     
+
+
                                        )
-                                     
-                            
+
+
                                      )
-                            
-                
+
+
                             )
-                
-              
+
+
                 )
-              
+
               )
     )
   )

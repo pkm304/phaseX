@@ -19,7 +19,7 @@ func_gen_prm_grids <- function(prm.ranges){
   for(i in 1:nrow(prm.ranges)){
     if(prm.ranges$log.scale[i] == TRUE){
       grids.temp = exp(log(prm.ranges$min[i]) + (log(prm.ranges$max[i])-log(prm.ranges$min[i]))/(prm.ranges$"number of grids"[i]-1)*(1:prm.ranges$"number of grids"[i]-1))
-      print(grids.temp)
+      #print(grids.temp)
       prm.grids[i,c(1+1,max.num.grids+1)] = grids.temp[c(1,prm.ranges$"number of grids"[i])]
       if(prm.ranges$"number of grids"[i] >2){
         prm.grids[i,(2+1):(prm.ranges$"number of grids"[i])] = grids.temp[2:(prm.ranges$"number of grids"[i]-1)]
@@ -229,20 +229,45 @@ func_gen_prm_subranges <- function(prm.comb, prm.ranges, sampling.meth, prm.grid
     }
   }else{
     for(i in 1:nrow(prm.ranges)){
-      idx.temp = which(prm.grids[i,] == prm.comb[,i])
+      temp.grids <- prm.grids[i,!is.na(prm.grids[i,])]
+      idx.temp = which(temp.grids == prm.comb[,i])
 
-      if(prm.grids$max[i] != prm.grids$min[i]){
-        if(names(prm.grids)[idx.temp] != "min"){
-          subranges[i,"min"] = prm.grids[i,idx.temp-1]
+      if(temp.grids$max != temp.grids$min){
+
+        #min
+        if(names(temp.grids)[idx.temp] != "min"){
+
+          #unit interval
+          temp.min = temp.grids[idx.temp-1]
+
+          if(prm.ranges$log.scale[i] == TRUE){
+            temp.min.delta = log(prm.comb[i]) - log(temp.min)
+            subranges[i,"min"] = log(prm.comb[i]) - temp.min.delta*prm.ranges$frac.range[i]
+            subranges[i,"min"] = exp(subranges[i,"min"])
+          }else{
+            temp.min.delta = prm.comb[i] - temp.min
+            subranges[i,"min"] = prm.comb[i] - temp.min.delta*prm.ranges$frac.range[i]
+          }
         }else{
           subranges[i,"min"] = prm.comb[i]
         }
 
-        if(names(prm.grids)[idx.temp] != "max"){
-          if(!is.na(prm.grids[i,idx.temp+1])){
-            subranges[i,"max"] = prm.grids[i,idx.temp+1]
+        #max
+        if(names(temp.grids)[idx.temp] != "max"){
+          if(!is.na(temp.grids[idx.temp+1])){
+            temp.max = temp.grids[idx.temp+1]
+
+            if(prm.ranges$log.scale[i] == TRUE){
+              temp.max.delta = log(prm.comb[i]) - log(temp.max)
+              subranges[i,"max"] = log(prm.comb[i]) - temp.max.delta*prm.ranges$frac.range[i]
+              subranges[i,"max"] = exp(subranges[i,"max"])
+            }else{
+              temp.max.delta = prm.comb[i] - temp.max
+              subranges[i,"max"] = prm.comb[i] - temp.max.delta*prm.ranges$frac.range[i]
+            }
+
           }else{
-            subranges[i,"max"] = prm.grids[i,"max"]
+            subranges[i,"max"] = temp.grids["max"]
           }
         }else{
           subranges[i,"max"] = prm.comb[i]
@@ -250,6 +275,13 @@ func_gen_prm_subranges <- function(prm.comb, prm.ranges, sampling.meth, prm.grid
       }else{
         subranges[i,"min"] = prm.comb[i]
         subranges[i,"max"] = prm.comb[i]
+      }
+
+      if(subranges[i,"min"]< prm.ranges$min[i]){
+        subranges[i,"min"] = prm.ranges$min[i]
+      }
+      if(subranges[i,"max"]> prm.ranges$max[i]){
+        subranges[i,"max"] = prm.ranges$max[i]
       }
       subranges$"number of grids" = prm.ranges$"number of grids"
     }
@@ -268,7 +300,7 @@ func_gen_prm_subranges <- function(prm.comb, prm.ranges, sampling.meth, prm.grid
 
 ####phasespace
 
-
+###cite arxiv paper (forest...)
 vec.plot.bc.mod = function (model1, model2 = NULL, X, i.var, prm.ranges ,grid.lines = 100,
                             zoom = 1, limitY = F, zlim, gap, three.dim = T, posit.class = NULL, pred.type = NULL, cut.off = NULL, moreArgs = list(), ...) {
   library(scales)

@@ -27,23 +27,23 @@ setMethod(
     .Object@prm.space$initial.prm.combs <- list()
     .Object@prm.space$additional.prm.combs <- list()
     .Object@prm.space$counter <- list()
-    .Object@prm.space$counter[["unif_grid"]] <- 0 
-    .Object@prm.space$counter[["pseudoranddom"]] <- 0 
-    .Object@prm.space$counter[["sobol'"]] <- 0 
-    .Object@prm.space$counter[["latin_hyp"]] <- 0 
+    .Object@prm.space$counter[["unif_grid"]] <- 0
+    .Object@prm.space$counter[["pseudoranddom"]] <- 0
+    .Object@prm.space$counter[["sobol'"]] <- 0
+    .Object@prm.space$counter[["latin_hyp"]] <- 0
     .Object@ml.models
     .Object@analysis$tsne <- list()
     return(.Object)
-    
+
   }
-  
+
 )
 
 setGeneric("get.phasespace.name",function(object){standardGeneric ("get.phasespace.name")})
 setMethod(
   f = "get.phasespace.name",
   signature = "Phasespace",
-  
+
   definition = function(object){
     return(object@phasespace.name)
   }
@@ -90,21 +90,21 @@ setMethod(
         }else{
           temp.init.prm.combs.name <- apply(matrix(temp.prm.ranges.name),1,function(name, object){names(object@prm.space$initial.prm.combs[[name]])},object = object)
         }
-        
+
         if(!is.null(unlist(temp.init.prm.combs.name))){
           names(temp.init.prm.combs.name) <- temp.prm.ranges.name
           return(temp.init.prm.combs.name)
         }else{
           return(NULL)
         }
-          
+
       }else{
         return(NULL)
       }
-      
+
     }else{
       return(NULL)
-      
+
     }
   }
 )
@@ -115,8 +115,8 @@ setMethod(
   f = "get.init.prm.combs",
   signature = "Phasespace",
   definition = function(object, name, prm.ranges.name){
-    
-  
+
+
     return(object@prm.space$initial.prm.combs[[prm.ranges.name]][[name]])
   }
 )
@@ -129,7 +129,7 @@ setMethod(
   definition = function(object){
     if(!is.null(object)){
       temp.prm.ranges.name <- get.prm.ranges.name(object)
-      
+
       if(!is.null(temp.prm.ranges.name)){
         if(length(temp.prm.ranges.name)==1){
           temp.init.prm.combs.name <- list()
@@ -143,8 +143,8 @@ setMethod(
             temp.addit.prm.combs.name[[temp.prm.ranges.name[i]]] <- list()
             if(!is.null(temp.init.prm.combs.name[[i]])){
               temp.name<- apply(matrix(temp.init.prm.combs.name[[i]]), 1,
-                                function(name,prm.ranges.name, object){names(object@prm.space$additional.prm.combs[[prm.ranges.name]][[name]])}, 
-                                prm.ranges.name = temp.prm.ranges.name[i], 
+                                function(name,prm.ranges.name, object){names(object@prm.space$additional.prm.combs[[prm.ranges.name]][[name]])},
+                                prm.ranges.name = temp.prm.ranges.name[i],
                                 object=object
               )
               if(!is.null(temp.name)){
@@ -158,21 +158,21 @@ setMethod(
           }else{
             return(NULL)
           }
-          
-          
+
+
         }else{
           return(NULL)
         }
-        
+
       }else{
         return(NULL)
       }
-      
+
     }else{
       return(NULL)
-      
+
     }
-    
+
   }
 )
 
@@ -205,13 +205,13 @@ setMethod(
     temp.phenotypes <- lapply(X = phenotypes, FUN = get.phenotypes, object = object )
     names( temp.phenotypes) <- phenotypes
     phenotype.values.selected <- list()
-    
+
     for(temp.phenotype.name in phenotypes){
       phenotype.values.selected[[temp.phenotype.name]] <- data.frame(stringsAsFactors = F)
       for(temp.prm.set.name in prm.sets){
         phenotype.values.selected[[temp.phenotype.name]] <- rbind(phenotype.values.selected[[temp.phenotype.name]], temp.phenotypes[[temp.phenotype.name]][[temp.prm.set.name]])
       }
-      phenotype.values.selected[[temp.phenotype.name]] <- phenotype.values.selected[[temp.phenotype.name]][order(phenotype.values.selected[[temp.phenotype.name]]$pkey),] 
+      phenotype.values.selected[[temp.phenotype.name]] <- phenotype.values.selected[[temp.phenotype.name]][order(phenotype.values.selected[[temp.phenotype.name]]$pkey),]
     }
     return(phenotype.values.selected)
   }
@@ -280,7 +280,7 @@ setMethod(
                           class.def = object@ml.models[[phenotype.name]][[ ml.model.name]][["class.def"]],
                           note = object@ml.models[[phenotype.name]][[ ml.model.name]][["note"]],
                           seed.num = object@ml.models[[phenotype.name]][[ ml.model.name]][["seed.num"]]
-                          
+
                           )
     return(temp.ml.model)
   }
@@ -337,7 +337,7 @@ setMethod(
   f = "get.validation.info",
   signature = "Phasespace",
   definition = function(object){
-    
+
   }
 )
 
@@ -369,11 +369,11 @@ setReplaceMethod(
   signature = "Phasespace",
   #definition = function(object, prm.ranges.name, name,  method, log.scale, num.grids =NULL, prm.grids = NULL, raw.smpl = NULL, prm.combs, prm.combs.z ){
   definition = function(object, value ){
-    
+
     if(is.null(object@prm.space$initial.prm.combs[[value$prm.ranges.name]])){
       object@prm.space$initial.prm.combs[[value$prm.ranges.name]] <- list()
     }else{}
-    
+
     object@prm.space$initial.prm.combs[[value$prm.ranges.name]][[value$name]] <- list()
     object@prm.space$initial.prm.combs[[value$prm.ranges.name]][[value$name]][["method"]] <- value$method #string
     object@prm.space$initial.prm.combs[[value$prm.ranges.name]][[value$name]][["log.scale"]] <- value$log.scale # vector
@@ -383,7 +383,7 @@ setReplaceMethod(
     object@prm.space$initial.prm.combs[[value$prm.ranges.name]][[value$name]][["prm.combs"]] <- value$prm.combs #data.frame
     object@prm.space$initial.prm.combs[[value$prm.ranges.name]][[value$name]][["prm.combs.z"]] <- value$prm.combs.z #data.frame
     return(object)
-    
+
   }
 )
 
@@ -393,15 +393,15 @@ setReplaceMethod(
   f = "add.additional.prm.combs",
   signature = "Phasespace",
   definition = function(object,value ){
-    
+
     if(is.null(object@prm.space$additional.prm.combs[[value$prm.ranges.name]])){
       object@prm.space$additional.prm.combs[[value$prm.ranges.name]] <- list()
     }else{}
-    
+
     if(is.null(object@prm.space$additional.prm.combs[[value$prm.ranges.name]][[value$init.prm.combs.name]])){
       object@prm.space$additional.prm.combs[[value$prm.ranges.name]][[value$init.prm.combs.name]] <- list()
     }else{}
-    
+
     object@prm.space$additional.prm.combs[[value$prm.ranges.name]][[value$init.prm.combs.name]][[value$name]] <- list()
     object@prm.space$additional.prm.combs[[value$prm.ranges.name]][[value$init.prm.combs.name]][[value$name]][["method"]] <- value$method #string
     object@prm.space$additional.prm.combs[[value$prm.ranges.name]][[value$init.prm.combs.name]][[value$name]][["log.scale"]] <- value$log.scale # vector
@@ -410,8 +410,9 @@ setReplaceMethod(
     object@prm.space$additional.prm.combs[[value$prm.ranges.name]][[value$init.prm.combs.name]][[value$name]][["prm.combs.selected"]] <- value$prm.combs.selected # dataframe
     object@prm.space$additional.prm.combs[[value$prm.ranges.name]][[value$init.prm.combs.name]][[value$name]][["prm.combs"]] <- value$prm.combs # dataframe
     object@prm.space$additional.prm.combs[[value$prm.ranges.name]][[value$init.prm.combs.name]][[value$name]][["prm.combs.z"]] <- value$prm.combs.z # dataframe
+    object@prm.space$additional.prm.combs[[value$prm.ranges.name]][[value$init.prm.combs.name]][[value$name]][["rd_seed"]] <- value$rd_seed # vector
     return(object)
-    
+
   }
 )
 
@@ -437,16 +438,16 @@ setReplaceMethod(
     if(is.null(object@ml.models[[value$phenotype.name]])){
       object@ml.models[[value$phenotype.name]] <- list()
     }
-    object@ml.models[[value$phenotype.name]][[value$name]] <- list() 
-    
+    object@ml.models[[value$phenotype.name]][[value$name]] <- list()
+
     #if the size of the model is large
     object@ml.models[[value$phenotype.name]][[value$name]][["ml.model.path"]] <- value$ml.model.path # string of path for ml.model.object file
     object@ml.models[[value$phenotype.name]][[value$name]][["ml.model.res.path"]] <- value$ml.model.res.path # string of path for ml.model.res.object file for bias correction.
-    
+
     #if the size of the model is small
     object@ml.models[[value$phenotype.name]][[value$name]][["ml.model"]] <- value$ml.model# string of path for ml.model.object file
     object@ml.models[[value$phenotype.name]][[value$name]][["ml.model.res"]] <- value$ml.model.res # string of path for ml.model.res.object file for bias correction.
-    
+
     object@ml.models[[value$phenotype.name]][[value$name]][["mode"]] <- value$mode # string "regression" or "classification"
     object@ml.models[[value$phenotype.name]][[value$name]][["prm.sets.used"]] <- value$prm.sets.used #
     object@ml.models[[value$phenotype.name]][[value$name]][["train.data"]] <- value$train.data # whole, character vector
@@ -455,7 +456,7 @@ setReplaceMethod(
     object@ml.models[[value$phenotype.name]][[value$name]][["note"]] <- value$note # string for data filtering information
     object@ml.models[[value$phenotype.name]][[value$name]][["custom.scale"]] <- value$custom.scale # list(name of scaling, scaled parameters (scaled = "original"), scaled values
     object@ml.models[[value$phenotype.name]][[value$name]][["seed.num"]] <- value$seed.num # integer
-    
+
     return(object)
   }
 )
@@ -510,18 +511,18 @@ setReplaceMethod(
 
 
 
-#Validation not yet done 
+#Validation not yet done
 #list(prm.comb.selected = c(pkey, values), parent.prm.set.name, prms.perturbed = c(...), prm.combs.val, prm.combs.z.val, phenotype.name = , phen.val.pred, ml.model.name, phen.val.sim)
 setGeneric("add.validation<-", function(object, value ){standardGeneric("add.validation<-")})
 setReplaceMethod(
   f = "add.validation",
   signature = "Phasespace",
   definition = function(object, value ){
-    
+
     if(is.null(object@analysis$validation)){
       object@analysis$validation <- list()
     }
-    
+
     temp.val.name <- paste0(value$prm.comb.selected$pkey,"_", value$prms.tuned[1],"_", value$prms.tuned[2])
     if(is.null(object@analysis$validation[[value$temp.val.name]])){
       object@analysis$validation[[value$temp.val.name]] <- list()
@@ -534,10 +535,10 @@ setReplaceMethod(
     if(is.null(object@analysis$validation[[value$temp.val.name]][[value$phenotype.name]])){
       object@analysis$validation[[value$temp.val.name]][[value$phenotype.name]] <- list()
     }
-    
+
     if(is.null(object@analysis$validation[[value$temp.val.name]][[value$phenotype.name]][["prediction"]])){
       object@analysis$validation[[value$temp.val.name]][[value$phenotype.name]][["prediction"]] <- list()
-    } 
+    }
     object@analysis$validation[[value$temp.val.name]][[value$phenotype.name]][["prediction"]][["ml.model.name"]]<- value$phen.val.pred #list(ml.model.name, data.frame(pkeys, values))
     object@analysis$validation[[value$temp.val.name]][[value$phenotype.name]][["simulation"]] <- value$phen.val.sim #data.frame(pkey, values)
 
@@ -558,7 +559,7 @@ setMethod(
     }else{
       return(object@prm.space$counter[[prm.ranges.name]][[smpl_method]])
     }
-   
+
   }
 )
 
@@ -570,7 +571,7 @@ setReplaceMethod(
   definition = function(object, value ){
     if(is.null(object@prm.space$counter[[value$prm.ranges.name]])){
      object@prm.space$counter[[value$prm.ranges.name]] <- list()
-    } 
+    }
     if(is.null(object@prm.space$counter[[value$prm.ranges.name]][[value$smpl_method]])){
       object@prm.space$counter[[value$prm.ranges.name]][[value$smpl_method]] <- 0
     }
@@ -592,7 +593,7 @@ setReplaceMethod(
     object@analysis[["custom.scale"]][[value$name]][["parameters"]] <- value$parameters # string vector (scaled == "original")
     object@analysis[["custom.scale"]][[value$name]][["func.obj"]] <- value$func.obj # function object to convert original parameters to custom scaling or vice versa.
     object@analysis[["custom.scale"]][[value$name]][["other.vals"]] <- value$other.vals # data.frame( pkey, parameter values)
-    
+
     return(object)
   }
 )
@@ -610,7 +611,7 @@ setMethod(
     }else{
       return(object@analysis$custom.scale[[name]])
     }
-    
+
   }
 )
 
@@ -627,7 +628,7 @@ setMethod(
     }else{
       return(object@analysis$custom.scale[[name]]$func.obj)
     }
-    
+
   }
 )
 
@@ -646,12 +647,9 @@ setMethod(
     }else{
       return(object@analysis$custom.scale[[name]]$other.vals)
     }
-    
+
   }
 )
-
-
-
 
 
 setGeneric("get.custom.scale.prms",function(object ){standardGeneric ("get.custom.scale.prms")})
@@ -668,7 +666,7 @@ setMethod(
       for(temp.name in temp.names){
         temp.prms[[temp.name]]<-names(object@analysis$custom.scale[[temp.name]]$parameters)
       }
-        
+
     }
     return(temp.prms)
   }
