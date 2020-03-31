@@ -142,14 +142,14 @@ setMethod(
           for(i in 1:length( temp.prm.ranges.name)){
             temp.addit.prm.combs.name[[temp.prm.ranges.name[i]]] <- list()
             if(!is.null(temp.init.prm.combs.name[[i]])){
-              temp.name<- apply(matrix(temp.init.prm.combs.name[[i]]), 1,
+              temp.name<- unlist(apply(matrix(temp.init.prm.combs.name[[i]]), 1,
                                 function(name,prm.ranges.name, object){names(object@prm.space$additional.prm.combs[[prm.ranges.name]][[name]])},
                                 prm.ranges.name = temp.prm.ranges.name[i],
                                 object=object
-              )
+              ))
               if(!is.null(temp.name)){
                 temp.addit.prm.combs.name[[temp.prm.ranges.name[i]]] <- temp.name
-                names(temp.addit.prm.combs.name[[temp.prm.ranges.name[i]]])<- temp.init.prm.combs.name[[i]]
+                names(temp.addit.prm.combs.name[[temp.prm.ranges.name[i]]])<- rep(temp.init.prm.combs.name[[i]], length(temp.name))
               }
             }
           }
@@ -382,6 +382,7 @@ setReplaceMethod(
     object@prm.space$initial.prm.combs[[value$prm.ranges.name]][[value$name]][["raw.smpl"]] <- value$raw.smpl # data.frame
     object@prm.space$initial.prm.combs[[value$prm.ranges.name]][[value$name]][["prm.combs"]] <- value$prm.combs #data.frame
     object@prm.space$initial.prm.combs[[value$prm.ranges.name]][[value$name]][["prm.combs.z"]] <- value$prm.combs.z #data.frame
+    object@prm.space$initial.prm.combs[[value$prm.ranges.name]][[value$name]][[value$name]][["rd_seed"]] <- value$rd_seed # vector
     return(object)
 
   }

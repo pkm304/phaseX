@@ -23,7 +23,9 @@ server <- function(input, output, session) {
   #####################################
   ######### Workspace##################
   #####################################
-  setwd("~/Dropbox/Codes/project_sim_ml/packaging/proto_app_OOBenv/phasespace/")
+  #setwd("~/Dropbox/Codes/project_sim_ml/packaging/proto_app_OOBenv/phasespace/")
+  setwd("~/Dropbox/Codes/project_tcell_activation/modeling/MAPPA_ntr0_ext_model_04052019/analysis/MAPPA/")
+
   phasespace <- reactiveValues()
 
   ##create a new phasespace
@@ -224,7 +226,8 @@ server <- function(input, output, session) {
                                                       num.grids = prm.ranges$DF[,c("names","number of grids")],
                                                       prm.grids = prm.grids$DF,
                                                       prm.combs = prm.combinations$DF,
-                                                      prm.combs.z =  temp.prm.combs.z )
+                                                      prm.combs.z =  temp.prm.combs.z,
+                                                      rd_seed = prm.combinations$rd_seed )
       }else{
 
         if(!is.null( prm.combinations$prm.combs.z)){
@@ -236,7 +239,8 @@ server <- function(input, output, session) {
                                                         #prm.grids = prm.grids$DF,
                                                         raw.smpl = prm.combinations$raw.smpl,
                                                         prm.combs = prm.combinations$DF,
-                                                        prm.combs.z =  prm.combinations$prm.combs.z )
+                                                        prm.combs.z =  prm.combinations$prm.combs.z,
+                                                        rd_seed = prm.combinations$rd_seed )
         }else{
           temp.init.prmset <- get.init.prm.combs(object = phasespace$object,name = input$show_prm_combinations_list_tab, prm.ranges.name = input$prm_ranges_select)
           temp.prm.combs.z <- fun.scale.conv(sample_meth = input$sampling_meth, prm.ranges = prm.ranges$DF, raw.smpl = temp.init.prmset$raw.smpl   ,prm.combs = prm.combinations$DF[,-1], z.to.org = FALSE )
@@ -249,7 +253,8 @@ server <- function(input, output, session) {
                                                         #prm.grids = prm.grids$DF,
                                                         #raw.smpl = prm.combinations$raw.smpl,
                                                         prm.combs = prm.combinations$DF,
-                                                        prm.combs.z = temp.prm.combs.z  )
+                                                        prm.combs.z = temp.prm.combs.z,
+                                                        rd_seed = prm.combinations$rd_seed )
 
         }
 
@@ -537,6 +542,7 @@ server <- function(input, output, session) {
     temp.date = as.character(temp.date)
     temp.pkey = gen_prm_keys(input$prm_comb_num,  temp.date, p.index, nchar(input$pkey_digits))
 
+    prm.combinations$rd_seed = temp.pkey$rd_seeds
     ##2.generate parameter combinations
     isolate(prm.ranges$DF <-  hot_to_r(input$parameter_ranges))
 
@@ -1104,7 +1110,7 @@ server <- function(input, output, session) {
         }
         temp.DF1 <- func_gen_prm_combs(temp.subranges, input$add_prm_comb_num, input$add_sampling_meth, temp.subgrids, count = get.prm.combs.count(object = phasespace$object, smpl_method = input$add_sampling_meth))#, prm.ranges.org = prm.ranges.add$DF)
         #temp.DF <- rbind(temp.DF, temp.DF1$prm.combs )
-        temp.DF[[i]] <- temp.DF1
+        temp.DF[[i]] <- temp.DF1$prm.combs
         #addit.prm.combs$DF <- rbind(addit.prm.combs$DF, temp.DF1$prm.combs )
         print(i)
       }
@@ -1275,19 +1281,30 @@ server <- function(input, output, session) {
   output$list_parameters_ml_tab_ui <- renderUI({
     parameters <- NULL
     if(!is.null(phasespace$object)& !is.null(input$load_parameter_sets_ml)){
-      #temp.ranges.names <- get.prm.ranges.name(object = phasespace$object)
-      temp.ranges.names <- get.prm.ranges.name(phasespace$object)[get.init.prm.combs.name(phasespace$object) %in% input$load_parameter_sets_ml] #Nov 6 2019
-      temp.ranges.names <- c(temp.ranges.names,
-                             get.prm.ranges.name(phasespace$object)[
-                               unlist(lapply(get.addit.prm.combs.name(phasespace$object), function(list){
-                                 if(length(list %in% input$load_parameter_sets_ml) == 0){
-                                   FALSE
-                                 }else{
-                                   list %in% input$load_parameter_sets_ml
-                                 }
-                               }))
-                               ]
-      )
+
+      if(length(get.prm.ranges.name(object = phasespace$object))==1){
+        temp.ranges.names <- get.prm.ranges.name(object = phasespace$object)
+      }else{
+        temp.init.prm.combs.name <- get.init.prm.combs.name(phasespace$object)
+        for(i in 1:length(temp.init.prm.combs.name)){
+          if(any(temp.init.prm.combs.name[[i]] %in% input$load_parameter_sets_ml)){
+            temp.ranges.names <- get.prm.ranges.name(phasespace$object)[i] # Mar12 2020
+          }
+        }
+        #temp.ranges.names <- get.prm.ranges.name(phasespace$object)[get.init.prm.combs.name(phasespace$object) %in% input$load_parameter_sets_ml] #Nov 6 2019
+      }
+
+      # temp.ranges.names <- c(temp.ranges.names,
+      #                        get.prm.ranges.name(phasespace$object)[
+      #                          unlist(lapply(get.addit.prm.combs.name(phasespace$object), function(list){
+      #                            if(length(list %in% input$load_parameter_sets_ml) == 0){
+      #                              FALSE
+      #                            }else{
+      #                              list %in% input$load_parameter_sets_ml
+      #                            }
+      #                          }))
+      #                          ]
+      #)
       temp.ranges.names <- unique(temp.ranges.names)
       #temp.ranges.names<- append(temp.ranges.names, temp.ranges.names)
       parameters <- as.character(unique(t(apply(t(temp.ranges.names),2, function(object, name ){ get.prm.ranges(object,name)[,"names"]}, object =  phasespace$object))))
@@ -1419,7 +1436,7 @@ server <- function(input, output, session) {
           temp.idx <- unlist(
             apply(matrix(unlist(temp.prm.names.init[[temp.range.name]])), 1,
                   function(name, prm.range.name, prm.names, input.name){
-                    any(prm.names[[name]] == input.name) },
+                    any(prm.names[names(prm.names) == name] == input.name) },
                   prm.range.name = temp.range.name, prm.names = temp.prm.names.addit[[temp.range.name]], input.name = input$load_parameter_sets_ml[i])
           )
 
@@ -1451,6 +1468,7 @@ server <- function(input, output, session) {
       for(temp.name in input$load_parameter_sets_ml){
         phenotype.values.selected.ml$DF <- rbind(phenotype.values.selected.ml$DF,  phenotype.loaded.ml$list[[temp.name]])
       }
+      phenotype.values.selected.ml$DF$pkey <- as.character(phenotype.values.selected.ml$DF$pkey)
 
       phenotype.values.selected.ml$DF <- phenotype.values.selected.ml$DF[order(phenotype.values.selected.ml$DF$pkey),]
       })
@@ -3415,11 +3433,14 @@ server <- function(input, output, session) {
       for(temp.name in ml.model.selected$prm.sets.used){
         phenotype.values.test <- rbind(phenotype.values.test, phenotype.loaded.ml.list[[temp.name]])
       }
+      phenotype.values.test$pkey <- as.character(phenotype.values.test$pkey)
       phenotype.values.test <- phenotype.values.test[order(phenotype.values.test$pkey),]
       phenotype.values.test <- phenotype.values.test[phenotype.values.test$pkey %in% ml.model.selected$test.data,]
 
       if(!is.null(ml.model.selected$custom.scale)){
-        prm.sets.test.rescaled <- cbind(prm.sets.test.rescaled, ml.model.selected$custom.scale$values[ ml.model.selected$custom.scale$values$pkey %in%  ml.model.selected$test.data,names(ml.model.selected$custom.scale$parameters)])
+        temp.custom.scale <- ml.model.selected$custom.scale$values[ ml.model.selected$custom.scale$values$pkey %in%  ml.model.selected$test.data,]
+        temp.custom.scale <- temp.custom.scale[order(temp.custom.scale$pkey),]
+        prm.sets.test.rescaled <- cbind(prm.sets.test.rescaled, temp.custom.scale[,names(ml.model.selected$custom.scale$parameters)])
       }
 
     })
