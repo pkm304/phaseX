@@ -2937,7 +2937,7 @@ server <- function(input, output, session) {
         names(ggdata) <<- c("pkey", "tSNE1","tSNE2")
         p1 = ggplot(ggdata, aes_string(x = "tSNE1", y = "tSNE2"))#, color = input$load_phenotype))
         p1 = p1+geom_point(size = input$point.size, alpha = input$point.alpha, color = "black") +# +scale_colour_gradient2(low="blue", high="red", midpoint = 0.4) + #labs(title =paste0( "tsne for original data"))  +
-          #xlim(-30,30) +ylim(-30,30) +
+          xlim(-30,30) +ylim(-30,30) +
           coord_cartesian(xlim = tsne_range$x, ylim = tsne_range$y, expand = FALSE) +
           theme(axis.text=element_text(size=10), axis.title=element_text(size=10))
         p1
