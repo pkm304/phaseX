@@ -143,13 +143,21 @@ setMethod(
             temp.addit.prm.combs.name[[temp.prm.ranges.name[i]]] <- list()
             if(!is.null(temp.init.prm.combs.name[[i]])){
               temp.name<- unlist(apply(matrix(temp.init.prm.combs.name[[i]]), 1,
-                                function(name,prm.ranges.name, object){names(object@prm.space$additional.prm.combs[[prm.ranges.name]][[name]])},
+                                function(name,prm.ranges.name, object){
+                                  temp.names <- names(object@prm.space$additional.prm.combs[[prm.ranges.name]][[name]])
+                                  #print(name)
+                                  # if(!is.null(temp.names)){
+                                  #   names(temp.names) <- name
+                                  # }
+                                  #print(temp.names)
+                                  },
                                 prm.ranges.name = temp.prm.ranges.name[i],
                                 object=object
               ))
+              names(temp.name) <- NULL
               if(!is.null(temp.name)){
                 temp.addit.prm.combs.name[[temp.prm.ranges.name[i]]] <- temp.name
-                names(temp.addit.prm.combs.name[[temp.prm.ranges.name[i]]])<- rep(temp.init.prm.combs.name[[i]], length(temp.name))
+                #names(temp.addit.prm.combs.name[[temp.prm.ranges.name[i]]])<- rep(temp.init.prm.combs.name[[i]], length(temp.name))
               }
             }
           }

@@ -68,7 +68,7 @@ func_gen_prm_combs <- function(prm.ranges, prm.comb.num, sampling.meth, prm.grid
         prm.combinations[,i] = t(prm.grids[i,vec.temp+1])
         prm.combinations[,i] = signif(prm.combinations[,i],digits = 6)
       }
-      return(prm.combinations)
+      return(list(prm.combs =prm.combinations))
     }
   }else if(sampling.meth == "pseudorandom"){
     prm.combs.pseudorand = matrix(NA, nrow = prm.comb.num, ncol = nrow(prm.ranges))

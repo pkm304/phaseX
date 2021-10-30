@@ -2,24 +2,24 @@ ui <- dashboardPage(
   dashboardHeader(title = "PhaseX",
                   dropdownMenu()),
 
-  title = "PhaseX",
-  header = tags$header(class = "main-header",
-                       span(class = "logo",
-                            "PhaseX"),
-
-                       tags$nav(class = "navbar navbar-static-top", role = "navigation",
-                                # Embed hidden icon so that we get the font-awesome dependency
-                                span(shiny::icon("fa fa-bars"), style = "display:none;"),
-                                # Sidebar toggle button
-                                a(href="#", class="sidebar-toggle", `data-toggle`="offcanvas",
-                                  role="button",
-                                  span(class="sr-only", "Toggle navigation")
-                                ),
-                                tags$div(class = "navbar-custom-menu",
-                                         )
-                     )
-
-  ),
+  # title = "PhaseX",
+  # header = tags$header(class = "main-header",
+  #                      span(class = "logo",
+  #                           "PhaseX"),
+  #
+  #                      tags$nav(class = "navbar navbar-static-top", role = "navigation",
+  #                               # Embed hidden icon so that we get the font-awesome dependency
+  #                               span(shiny::icon("fa fa-bars"), style = "display:none;"),
+  #                               # Sidebar toggle button
+  #                               a(href="#", class="sidebar-toggle", `data-toggle`="offcanvas",
+  #                                 role="button",
+  #                                 span(class="sr-only", "Toggle navigation")
+  #                               ),
+  #                               tags$div(class = "navbar-custom-menu",
+  #                                        )
+  #                    )
+  #
+  # ),
 
   dashboardSidebar(
     sidebarMenu(id = "side_menu_tab",

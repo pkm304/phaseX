@@ -24,8 +24,8 @@ server <- function(input, output, session) {
   ######### Workspace##################
   #####################################
   #setwd("~/Dropbox/Codes/project_sim_ml/packaging/proto_app_OOBenv/phasespace/")
-  setwd("~/Dropbox/Codes/project_tcell_activation/modeling/MAPPA_ntr0_ext_model_04052019/analysis/MAPPA/")
-
+  #setwd("~/Dropbox/Codes/project_tcell_activation/modeling/MAPPA_ntr0_ext_model_04052019/analysis/MAPPA/")
+  setwd("~/Dropbox/Codes/project_atphg_vs_apop/model_tyson/mappa/")
   phasespace <- reactiveValues()
 
   ##create a new phasespace
